@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080" # Maps localhost:80 to app:8080
+    depends_on:
+      - db
+    environment:
+      - TZ=Asia/Kolkata
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/library_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Kolkata
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    restart: always
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=library_db
+    volumes:
+      - mysql_data_test:/var/lib/mysql
+      - ./backup.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+volumes:
+  mysql_data_test:
